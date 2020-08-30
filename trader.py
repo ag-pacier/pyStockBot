@@ -1,0 +1,124 @@
+# Alan's Stock Trader Bot
+# 08/29/2020
+# Written in Python 3
+#
+# Documentation Links:
+#	https://github.com/RomelTorres/alpha_vantage
+# 	https://www.alphavantage.co/documentation/
+#	https://robin-stocks.readthedocs.io/en/latest/quickstart.html
+#	https://robin-stocks.readthedocs.io/en/latest/functions.html
+
+#import statements
+import os
+import time
+from datetime import date
+import robin_stocks
+from dotenv import load_dotenv
+import pandas as pd
+from alpha_vantage.timeseries import TimeSeries
+from alpha_vantage.techindicators import TechIndicators
+import matplotlib.pyplot as plt
+from yahoo_fin import stock_info as si
+
+#load and set env variables
+load_dotenv()
+ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
+ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
+ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
+
+#log into Robinhood using credentials in the .env file
+print("Logging you into: " + ROBINHOOD_USERNAME)
+login = robin_stocks.login(ROBINHOOD_USERNAME,ROBINHOOD_PASSWORD)
+
+while True:
+	#set variables
+	ticker = 'AAPL'
+	current_price = 0.0
+	day_smas = []
+	week_smas = []
+	keys = []
+	vals = []
+	intersections = []
+	sell_triggers = []
+	buy_triggers = []
+	share_qty = 1
+
+	pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+	#Alpha Vantage connection info
+	ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+	ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+
+	print("Processing data for " + str(ticker))
+	#get current stock price
+	current_price = si.get_live_price(ticker)
+	print("Current " + ticker + " price: " + str(current_price))
+
+	#get actual price
+	actual_data, meta_data = ts.get_weekly(symbol=ticker)
+
+	#get day SMA
+	day_sma, meta_deta = ti.get_sma(symbol=ticker,interval='daily')
+
+	#get weekly SMA
+	weekly_sma, meta_deta = ti.get_sma(symbol=ticker,interval='weekly')
+
+	for val in day_sma.iterrows():
+		day_smas.append([val[0],val[1].values])
+	for val in weekly_sma.iterrows():
+		week_smas.append([val[0],val[1].values])
+
+	for day in day_smas:
+		for week in week_smas:
+			if week[0] == day[0]:
+				#print(week[1][0])
+				#print(day[1][0])
+				#print("Date: " + str(day[0]) + " : day SMA Price: " + str(day[1][0]) + " : week SMA Price: " + str(week[1][0]))
+				keys.append([day[0], day[1][0], week[1][0]])
+				vals.append(day[1][0] - week[1][0])
+
+	for i, v in enumerate(vals):
+		if i > 0:
+			if v / vals[i-1] < 0:
+				print("Intersection Happened: " + str(keys[i]))
+				intersections.append(keys[i])
+
+	#decide if the intersection triggers a buy or sell
+	#if the week SMA is less than the month SMA, sell; if the week SMA is more than the month SMA, buy
+	for intersect in intersections:
+		if intersect[1] < intersect[2]:
+			sell_triggers.append(intersect)
+		elif intersect[1] > intersect[2]:
+			buy_triggers.append(intersect)
+
+	for buy in buy_triggers:
+		print("Buy Trigger: " + str(buy))
+	for sell in sell_triggers:
+		print("Sell Trigger: " + str(sell))
+
+	#if the latest buy trigger is today's date, place Robinhood order
+	if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
+		print("##### STOCK BUY HAS BEEN TRIGGERED #####")
+		#buy qty of specified stock from Robinhood
+		#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+		print("Bought " + share_qty + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+	#if the latest sell trigger is today's date, sell shares of that stock
+	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
+		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
+		#sell share(s) of stock
+		#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+		print("Sold " + share_qty + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+
+	time.sleep(86400) #reruns every day, can be placed in a cron job later if you want to put in the effort to learn/do that
+
+'''
+#plot data with matplotlib, this will hold up code execution until the graph window is exited
+ax = plt.gca()
+actual_data['4. close'].plot(ax=ax,label='Actual Price')
+day_sma.plot(ax=ax,label='day SMA')
+weekly_sma.plot(ax=ax,label='weekly SMA')
+plt.legend(loc='best')
+plt.title(ticker)
+plt.grid()
+plt.show()
+'''
