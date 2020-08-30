@@ -15,16 +15,17 @@
 
 #import statements
 import os
+import csv
 import time
-from datetime import date
 import robin_stocks
+from datetime import date
 from dotenv import load_dotenv
-import pandas as pd
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
-import matplotlib.pyplot as plt
 from yahoo_fin import stock_info as si
-import csv
+import matplotlib.pyplot as plt
+import pandas as pd
+
 
 #log start of daily run
 with open('transaction-log.csv', 'w', newline='') as file:
