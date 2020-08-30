@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from yahoo_fin import stock_info as si
 import csv
 
+#log start of daily run
 with open('transaction-log.csv', 'w', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerow(["DAILY RUN", str(date.today()), "STARTED"])
@@ -184,6 +185,7 @@ for ticker in monitored_tickers:
 
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
+#log completion of daily run
 with open('transaction-log.csv', 'w', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerow(["DAILY RUN", str(date.today()), "COMPLETE"])
