@@ -23,6 +23,10 @@ import matplotlib.pyplot as plt
 from yahoo_fin import stock_info as si
 import csv
 
+with open('transaction-log.csv', 'w', newline='') as file:
+	writer = csv.writer(file)
+	writer.writerow(["DAILY RUN", str(date.today()), "STARTED"])
+
 #load and set env variables
 load_dotenv()
 ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
@@ -179,5 +183,9 @@ for ticker in monitored_tickers:
 		 		print("Please enter y or n")
 
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
+
+with open('transaction-log.csv', 'w', newline='') as file:
+	writer = csv.writer(file)
+	writer.writerow(["DAILY RUN", str(date.today()), "COMPLETE"])
 
 robin_stocks.authentication.logout()
