@@ -1,7 +1,9 @@
 # Python Stock Trader
 ## Getting Started
 Install requirements: 
-```pip3 install -r requirements.txt```
+```
+pip3 install -r requirements.txt
+```
 
 Create a file called `.env` in the same directory as your Python script and populate it with your passwords, API keys, and other secrets:
 ```
