@@ -116,6 +116,7 @@ for ticker in tickers:
 		#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 		print("Sold " + share_qty + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 
+'''
 #plot data with matplotlib, this will hold up code execution until the graph window is exited
 ax = plt.gca()
 actual_data['4. close'].plot(ax=ax,label='Actual Price')
@@ -125,3 +126,4 @@ plt.legend(loc='best')
 plt.title(ticker)
 plt.grid()
 plt.show()
+'''
