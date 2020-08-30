@@ -30,7 +30,7 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set variables
-monitored_tickers = ['APPS']
+monitored_tickers = ['ODT', 'CODX', 'APPS']
 current_price = 0.0
 day_emas = []
 week_emas = []
@@ -99,29 +99,75 @@ for ticker in monitored_tickers:
 	print("____________________ ^ SELL TRIGGERS ^ ____________________")
 
 	#if the latest buy trigger is today's date, place Robinhood order
-	if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
+	if str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK BUY HAS BEEN TRIGGERED #####")
+
 		#log into Robinhood using credentials in the .env file
 		print("Logging you into: " + ROBINHOOD_USERNAME)
 		login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
-		#buy qty of specified stock from Robinhood
-		#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
-		print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-		with open('transaction-log.csv', 'w', newline='') as file:
-		    writer = csv.writer(file)
-		    writer.writerow(["BUY", ticker, str(date.today()), str(current_price)])
+
+		#plot data with matplotlib, this will hold up code execution until the graph window is exited
+		ax = plt.gca()
+		actual_data['4. close'].plot(ax=ax,label='Actual Price')
+		day_ema.plot(ax=ax,label='day ema')
+		weekly_ema.plot(ax=ax,label='weekly ema')
+		plt.legend(loc='best')
+		plt.title(ticker)
+		plt.grid()
+		plt.show()
+
+		#prompt user to continue with buy
+		answer = None
+		while answer not in ("y", "n"): 
+			answer = input("Proceed with buy? (y/n) ") 
+			if answer == "y": 
+				#buy qty of specified stock from Robinhood
+				#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+				with open('transaction-log.csv', 'w', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "COMPLETE"])
+			elif answer == "n": 
+				with open('transaction-log.csv', 'w', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+			else: 
+		 		print("Please enter y or n")
+
 	#if the latest sell trigger is today's date, sell shares of that stock
 	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
 		#log into Robinhood using credentials in the .env file
 		print("Logging you into: " + ROBINHOOD_USERNAME)
 		login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
-		#sell share(s) of stock
-		#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
-		print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-		with open('transaction-log.csv', 'w', newline='') as file:
-		    writer = csv.writer(file)
-		    writer.writerow(["SELL", ticker, str(date.today()), str(current_price)])
+
+		#plot data with matplotlib, this will hold up code execution until the graph window is exited
+		ax = plt.gca()
+		actual_data['4. close'].plot(ax=ax,label='Actual Price')
+		day_ema.plot(ax=ax,label='day ema')
+		weekly_ema.plot(ax=ax,label='weekly ema')
+		plt.legend(loc='best')
+		plt.title(ticker)
+		plt.grid()
+		plt.show()
+
+		#prompt user to continue with sell
+		answer = None
+		while answer not in ("y", "n"): 
+			answer = input("Proceed with sell? (y/n) ") 
+			if answer == "y": 
+				#sell qty of specified stock from Robinhood
+				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+				with open('transaction-log.csv', 'w', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "COMPLETE"])
+			elif answer == "n": 
+				with open('transaction-log.csv', 'w', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+			else: 
+		 		print("Please enter y or n")
 
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
