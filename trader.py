@@ -26,7 +26,6 @@ from yahoo_fin import stock_info as si
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 #log start of daily run
 with open('transaction-log.csv', 'w', newline='') as file:
 	writer = csv.writer(file)
@@ -39,7 +38,7 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set variables
-monitored_tickers = ['XLTD', 'VIVO', 'ODT', 'CODX', 'APPS']
+monitored_tickers = ['VIVO', 'CODX', 'ODT', 'APPS']
 current_price = 0.0
 share_qty = 1
 
@@ -61,7 +60,7 @@ for ticker in monitored_tickers:
 
 	#get current stock price
 	current_price = si.get_live_price(ticker)
-	print("_____________________ " + ticker + " - [" + str(current_price) + "]")
+	print("_____________________ " + ticker + " - [" + str(round(current_price, 2)) + "]")
 
 	#get actual price
 	actual_data, meta_data = ts.get_weekly(symbol=ticker)
