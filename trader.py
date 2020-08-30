@@ -30,7 +30,7 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set variables
-monitored_tickers = ['ODT', 'CODX', 'APPS']
+monitored_tickers = ['XLTD', 'VIVO', 'ODT', 'CODX', 'APPS']
 current_price = 0.0
 share_qty = 1
 
@@ -103,6 +103,9 @@ for ticker in monitored_tickers:
 	#if the latest buy trigger is today's date, place Robinhood order
 	if str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK BUY HAS BEEN TRIGGERED #####")
+		with open('transaction-log.csv', 'w', newline='') as file:
+					writer = csv.writer(file)
+					writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "STARTED"])
 
 		#log into Robinhood using credentials in the .env file
 		print("Logging you into: " + ROBINHOOD_USERNAME)
@@ -131,14 +134,18 @@ for ticker in monitored_tickers:
 				    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "COMPLETE"])
 			elif answer == "n": 
 				with open('transaction-log.csv', 'w', newline='') as file:
-				    writer = csv.writer(file)
-				    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+					writer = csv.writer(file)
+					writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
 			else: 
 		 		print("Please enter y or n")
 
 	#if the latest sell trigger is today's date, sell shares of that stock
 	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
+		with open('transaction-log.csv', 'w', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "STARTED"])
+
 		#log into Robinhood using credentials in the .env file
 		print("Logging you into: " + ROBINHOOD_USERNAME)
 		login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
@@ -162,12 +169,12 @@ for ticker in monitored_tickers:
 				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 				with open('transaction-log.csv', 'w', newline='') as file:
-				    writer = csv.writer(file)
-				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "COMPLETE"])
+					writer = csv.writer(file)
+					writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "COMPLETE"])
 			elif answer == "n": 
 				with open('transaction-log.csv', 'w', newline='') as file:
-				    writer = csv.writer(file)
-				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+					writer = csv.writer(file)
+					writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
 			else: 
 		 		print("Please enter y or n")
 
