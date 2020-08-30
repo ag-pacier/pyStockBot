@@ -33,10 +33,10 @@ print("Logging you into: " + ROBINHOOD_USERNAME)
 login = robin_stocks.login(ROBINHOOD_USERNAME,ROBINHOOD_PASSWORD)
 
 #set variables
-tickers = ['RPD', 'AAPL', 'MSFT', 'EAT']
+tickers = ['AAPL', 'RPD', 'MSFT', 'EAT']
 current_price = 0.0
-day_smas = []
-week_smas = []
+day_emas = []
+week_emas = []
 keys = []
 vals = []
 intersections = []
@@ -58,23 +58,23 @@ for ticker in tickers:
 	#get actual price
 	actual_data, meta_data = ts.get_weekly(symbol=ticker)
 
-	#get day SMA
-	day_sma, meta_deta = ti.get_sma(symbol=ticker,interval='daily')
+	#get day ema
+	day_ema, meta_deta = ti.get_ema(symbol=ticker,interval='daily')
 
-	#get weekly SMA
-	weekly_sma, meta_deta = ti.get_sma(symbol=ticker,interval='weekly')
+	#get weekly ema
+	weekly_ema, meta_deta = ti.get_ema(symbol=ticker,interval='weekly')
 
-	for val in day_sma.iterrows():
-		day_smas.append([val[0],val[1].values])
-	for val in weekly_sma.iterrows():
-		week_smas.append([val[0],val[1].values])
+	for val in day_ema.iterrows():
+		day_emas.append([val[0],val[1].values])
+	for val in weekly_ema.iterrows():
+		week_emas.append([val[0],val[1].values])
 
-	for day in day_smas:
-		for week in week_smas:
+	for day in day_emas:
+		for week in week_emas:
 			if week[0] == day[0]:
 				#print(week[1][0])
 				#print(day[1][0])
-				#print("Date: " + str(day[0]) + " : day SMA Price: " + str(day[1][0]) + " : week SMA Price: " + str(week[1][0]))
+				#print("Date: " + str(day[0]) + " : day ema Price: " + str(day[1][0]) + " : week ema Price: " + str(week[1][0]))
 				keys.append([day[0], day[1][0], week[1][0], ticker])
 				vals.append(day[1][0] - week[1][0])
 
@@ -85,7 +85,7 @@ for ticker in tickers:
 				#print("Intersection Happened: " + str(keys[i]))
 
 	#decide if the intersection triggers a buy or sell
-	#if the week SMA is less than the month SMA, sell; if the week SMA is more than the month SMA, buy
+	#if the week ema is less than the month ema, sell; if the week ema is more than the month ema, buy
 	for intersect in intersections:
 		if intersect[1] < intersect[2]:
 			sell_triggers.append(intersect)
@@ -120,8 +120,8 @@ for ticker in tickers:
 #plot data with matplotlib, this will hold up code execution until the graph window is exited
 ax = plt.gca()
 actual_data['4. close'].plot(ax=ax,label='Actual Price')
-day_sma.plot(ax=ax,label='day SMA')
-weekly_sma.plot(ax=ax,label='weekly SMA')
+day_ema.plot(ax=ax,label='day ema')
+weekly_ema.plot(ax=ax,label='weekly ema')
 plt.legend(loc='best')
 plt.title(ticker)
 plt.grid()
