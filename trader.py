@@ -28,12 +28,8 @@ ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
-#log into Robinhood using credentials in the .env file
-print("Logging you into: " + ROBINHOOD_USERNAME)
-login = robin_stocks.login(ROBINHOOD_USERNAME,ROBINHOOD_PASSWORD)
-
 #set variables
-tickers = ['AAPL', 'RPD', 'MSFT', 'EAT']
+monitored_tickers = ['APPS']
 current_price = 0.0
 day_emas = []
 week_emas = []
@@ -50,7 +46,7 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
-for ticker in tickers:
+for ticker in monitored_tickers:
 	#get current stock price
 	current_price = si.get_live_price(ticker)
 	print("_____________________ " + ticker + " - [" + str(current_price) + "]")
@@ -101,20 +97,28 @@ for ticker in tickers:
 		print("Sell Trigger: " + str(sell))
 	print("____________________ ^ SELL TRIGGERS ^ ____________________")
 
-	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
-
 	#if the latest buy trigger is today's date, place Robinhood order
 	if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK BUY HAS BEEN TRIGGERED #####")
+		#log into Robinhood using credentials in the .env file
+		print("Logging you into: " + ROBINHOOD_USERNAME)
+		login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 		#buy qty of specified stock from Robinhood
 		#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
-		print("Bought " + share_qty + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+		print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 	#if the latest sell trigger is today's date, sell shares of that stock
 	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
+		#log into Robinhood using credentials in the .env file
+		print("Logging you into: " + ROBINHOOD_USERNAME)
+		login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 		#sell share(s) of stock
 		#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
-		print("Sold " + share_qty + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+		print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+
+	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
+
+robin_stocks.authentication.logout()
 
 '''
 #plot data with matplotlib, this will hold up code execution until the graph window is exited
