@@ -21,6 +21,7 @@ from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
 import matplotlib.pyplot as plt
 from yahoo_fin import stock_info as si
+import csv
 
 #load and set env variables
 load_dotenv()
@@ -106,6 +107,9 @@ for ticker in monitored_tickers:
 		#buy qty of specified stock from Robinhood
 		#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
 		print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+		with open('transaction-log.csv', 'w', newline='') as file:
+		    writer = csv.writer(file)
+		    writer.writerow(["BUY", ticker, str(date.today()), str(current_price)])
 	#if the latest sell trigger is today's date, sell shares of that stock
 	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
@@ -115,6 +119,9 @@ for ticker in monitored_tickers:
 		#sell share(s) of stock
 		#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 		print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+		with open('transaction-log.csv', 'w', newline='') as file:
+		    writer = csv.writer(file)
+		    writer.writerow(["SELL", ticker, str(date.today()), str(current_price)])
 
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
