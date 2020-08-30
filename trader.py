@@ -38,7 +38,7 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set variables
-monitored_tickers = ['VIVO', 'CODX', 'ODT', 'APPS']
+monitored_tickers = ['VIVO', 'SQQQ', 'SNBP', 'NMRD', 'CODX', 'ODT', 'APPS']
 current_price = 0.0
 share_qty = 1
 

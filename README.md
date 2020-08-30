@@ -16,9 +16,11 @@ Make sure `.env` is listed in your `.gitignore` file to ensure the file with env
 
 Modify `monitored_tickers` array with the stocks you want to monitor for buy/sell triggers.
 
-Test the script with: `python3 trader.py`
+## Testing
+Test the script with: `python3 trader.py`.
 
+## Running
 Run `trader.py` daily at 4:10PM EST. This can be accomplished with a cronjob or similar task, depending on your OS.
 
 Example cronjob:
-`10 4 * * *  /usr/local/bin/python3 /<path>/<to>/trader.py`
+`40 6 * * * cd /path/to/project_folder/ && $(which python3) trader.py`
