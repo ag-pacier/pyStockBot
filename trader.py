@@ -2,7 +2,10 @@
 # 08/29/2020
 # Written in Python 3
 #
-# Place this script in a cron job to run daily.
+# Run this script daily as a scheduled task or cronjob.
+# NOTE: The majority of this script was written in a single night, so DO NOT trust this algoritm with large amounts of money. Further testing is needed.
+#
+# This script will monitor a given set of stock tickers and make educated predictions on when to trigger buys and sells based on the exponential moving average crossover strategy.
 #
 # Documentation Links:
 #	https://github.com/RomelTorres/alpha_vantage
