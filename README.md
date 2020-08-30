@@ -16,4 +16,4 @@ Test the script with: `python3 trader.py`
 Run `trader.py` daily at 4:10PM EST. This can be accomplished with a cronjob or similar task, depending on your OS.
 
 Example cronjob:
-`10 4 * * *  /usr/local/bin/python3 /Users/alanraff/Documents/Python-Stock-Trader/trader.py`
+`10 4 * * *  /usr/local/bin/python3 /Users/<username>/Documents/Python-Stock-Trader/trader.py`
