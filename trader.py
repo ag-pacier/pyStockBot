@@ -32,13 +32,6 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 #set variables
 monitored_tickers = ['ODT', 'CODX', 'APPS']
 current_price = 0.0
-day_emas = []
-week_emas = []
-keys = []
-vals = []
-intersections = []
-sell_triggers = []
-buy_triggers = []
 share_qty = 1
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
@@ -48,6 +41,15 @@ ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
 for ticker in monitored_tickers:
+	#set variables
+	day_emas = []
+	week_emas = []
+	keys = []
+	vals = []
+	intersections = []
+	sell_triggers = []
+	buy_triggers = []
+
 	#get current stock price
 	current_price = si.get_live_price(ticker)
 	print("_____________________ " + ticker + " - [" + str(current_price) + "]")
@@ -172,15 +174,3 @@ for ticker in monitored_tickers:
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 robin_stocks.authentication.logout()
-
-'''
-#plot data with matplotlib, this will hold up code execution until the graph window is exited
-ax = plt.gca()
-actual_data['4. close'].plot(ax=ax,label='Actual Price')
-day_ema.plot(ax=ax,label='day ema')
-weekly_ema.plot(ax=ax,label='weekly ema')
-plt.legend(loc='best')
-plt.title(ticker)
-plt.grid()
-plt.show()
-'''
