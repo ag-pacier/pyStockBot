@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 #log start of daily run
-with open('transaction-log.csv', 'w', newline='') as file:
+with open('transaction-log.csv', 'a', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerow(["DAILY RUN", str(date.today()), "STARTED"])
 
@@ -79,8 +79,6 @@ for ticker in monitored_tickers:
 	for day in day_emas:
 		for week in week_emas:
 			if week[0] == day[0]:
-				#print(week[1][0])
-				#print(day[1][0])
 				#print("Date: " + str(day[0]) + " : day ema Price: " + str(day[1][0]) + " : week ema Price: " + str(week[1][0]))
 				keys.append([day[0], day[1][0], week[1][0], ticker])
 				vals.append(day[1][0] - week[1][0])
@@ -111,7 +109,7 @@ for ticker in monitored_tickers:
 	#if the latest buy trigger is today's date, place Robinhood order
 	if str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK BUY HAS BEEN TRIGGERED #####")
-		with open('transaction-log.csv', 'w', newline='') as file:
+		with open('transaction-log.csv', 'a', newline='') as file:
 					writer = csv.writer(file)
 					writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "STARTED"])
 
@@ -137,11 +135,11 @@ for ticker in monitored_tickers:
 				#buy qty of specified stock from Robinhood
 				#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
 				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				with open('transaction-log.csv', 'w', newline='') as file:
+				with open('transaction-log.csv', 'a', newline='') as file:
 				    writer = csv.writer(file)
 				    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "COMPLETE"])
 			elif answer == "n": 
-				with open('transaction-log.csv', 'w', newline='') as file:
+				with open('transaction-log.csv', 'a', newline='') as file:
 					writer = csv.writer(file)
 					writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
 			else: 
@@ -150,7 +148,7 @@ for ticker in monitored_tickers:
 	#if the latest sell trigger is today's date, sell shares of that stock
 	elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 		print("##### STOCK SELL HAS BEEN TRIGGERED #####")
-		with open('transaction-log.csv', 'w', newline='') as file:
+		with open('transaction-log.csv', 'a', newline='') as file:
 				    writer = csv.writer(file)
 				    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "STARTED"])
 
@@ -176,11 +174,11 @@ for ticker in monitored_tickers:
 				#sell qty of specified stock from Robinhood
 				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				with open('transaction-log.csv', 'w', newline='') as file:
+				with open('transaction-log.csv', 'a', newline='') as file:
 					writer = csv.writer(file)
 					writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "COMPLETE"])
 			elif answer == "n": 
-				with open('transaction-log.csv', 'w', newline='') as file:
+				with open('transaction-log.csv', 'a', newline='') as file:
 					writer = csv.writer(file)
 					writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
 			else: 
@@ -189,7 +187,7 @@ for ticker in monitored_tickers:
 	time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 #log completion of daily run
-with open('transaction-log.csv', 'w', newline='') as file:
+with open('transaction-log.csv', 'a', newline='') as file:
 	writer = csv.writer(file)
 	writer.writerow(["DAILY RUN", str(date.today()), "COMPLETE"])
 
