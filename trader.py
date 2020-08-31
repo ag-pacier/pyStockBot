@@ -158,9 +158,7 @@ def main():
 		#if the latest buy trigger is today's date, place Robinhood order
 		if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK BUY HAS BEEN TRIGGERED #####")
-			with open('transaction-log.csv', 'a', newline='') as file:
-						writer = csv.writer(file)
-						writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "STARTED"])
+			append_to_log("BUY", "STARTED", ticker, current_price)
 
 			#log into Robinhood using credentials in the .env file
 			print("Logging you into: " + ROBINHOOD_USERNAME)
@@ -172,12 +170,12 @@ def main():
 			#confirm action with user
 			prompt_user("BUY", ticker, current_price)
 
+			append_to_log("BUY", "COMPLETED", ticker, current_price)
+
 		#if the latest sell trigger is today's date, sell shares of that stock
 		elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK SELL HAS BEEN TRIGGERED #####")
-			with open('transaction-log.csv', 'a', newline='') as file:
-					    writer = csv.writer(file)
-					    writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "STARTED"])
+			append_to_log("BUY", "STARTED", ticker, current_price)
 
 			#log into Robinhood using credentials in the .env file
 			print("Logging you into: " + ROBINHOOD_USERNAME)
@@ -192,7 +190,7 @@ def main():
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
-	append_to_log("DAILY RUN", "COMPLETE", "N/A", "N/A")
+	append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
 
 	robin_stocks.authentication.logout()
 
