@@ -48,6 +48,7 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
+#plot data using matplotlib
 def generate_plot(actual_data, day_ema, weekly_ema, ticker):
 	ax = plt.gca()
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
@@ -57,6 +58,44 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker):
 	plt.title(ticker)
 	plt.grid()
 	plt.show()
+
+#prompt user to continue with action
+def prompt_user(action, ticker, current_price):
+	if action == "BUY":
+		answer = None
+		while answer not in ("y", "n"): 
+			answer = input("Proceed with buy? (y/n) ") 
+			if answer == "y": 
+				#buy qty of specified stock from Robinhood
+				#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+				with open('transaction-log.csv', 'a', newline='') as file:
+				    writer = csv.writer(file)
+				    writer.writerow([action, ticker, str(date.today()), str(current_price), "COMPLETE"])
+			elif answer == "n": 
+				with open('transaction-log.csv', 'a', newline='') as file:
+					writer = csv.writer(file)
+					writer.writerow([action, ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+			else: 
+		 		print("Please enter y or n")
+	elif action == "SELL":
+		answer = None
+		while answer not in ("y", "n"): 
+			answer = input("Proceed with sell? (y/n) ") 
+			if answer == "y": 
+				#sell qty of specified stock from Robinhood
+				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+				with open('transaction-log.csv', 'a', newline='') as file:
+					writer = csv.writer(file)
+					writer.writerow([action, ticker, str(date.today()), str(current_price), "COMPLETE"])
+			elif answer == "n": 
+				with open('transaction-log.csv', 'a', newline='') as file:
+					writer = csv.writer(file)
+					writer.writerow([action, ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+			else: 
+		 		print("Please enter y or n")
+
 
 def main():
 	for ticker in monitored_tickers:
@@ -133,23 +172,7 @@ def main():
 			#plot data with matplotlib, this will hold up code execution until the graph window is exited
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
-			#prompt user to continue with buy
-			answer = None
-			while answer not in ("y", "n"): 
-				answer = input("Proceed with buy? (y/n) ") 
-				if answer == "y": 
-					#buy qty of specified stock from Robinhood
-					#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
-					print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-					with open('transaction-log.csv', 'a', newline='') as file:
-					    writer = csv.writer(file)
-					    writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "COMPLETE"])
-				elif answer == "n": 
-					with open('transaction-log.csv', 'a', newline='') as file:
-						writer = csv.writer(file)
-						writer.writerow(["BUY", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
-				else: 
-			 		print("Please enter y or n")
+			prompt_user("BUY", ticker, current_price)
 
 		#if the latest sell trigger is today's date, sell shares of that stock
 		elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
@@ -165,23 +188,8 @@ def main():
 			#plot data with matplotlib, this will hold up code execution until the graph window is exited
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
-			#prompt user to continue with sell
-			answer = None
-			while answer not in ("y", "n"): 
-				answer = input("Proceed with sell? (y/n) ") 
-				if answer == "y": 
-					#sell qty of specified stock from Robinhood
-					#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
-					print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-					with open('transaction-log.csv', 'a', newline='') as file:
-						writer = csv.writer(file)
-						writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "COMPLETE"])
-				elif answer == "n": 
-					with open('transaction-log.csv', 'a', newline='') as file:
-						writer = csv.writer(file)
-						writer.writerow(["SELL", ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
-				else: 
-			 		print("Please enter y or n")
+			prompt_user("SELL", ticker, current_price)
+			
 
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
