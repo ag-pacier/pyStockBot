@@ -26,21 +26,17 @@ from yahoo_fin import stock_info as si
 import matplotlib.pyplot as plt
 import pandas as pd
 
-#log start of daily run
-with open('transaction-log.csv', 'a', newline='') as file:
-	writer = csv.writer(file)
-	writer.writerow(["DAILY RUN", str(date.today()), "STARTED"])
-
 #load and set env variables
 load_dotenv()
 ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
-#set variables
-monitored_tickers = ['T']
-current_price = 0.0
-share_qty = 1
+#set global variables
+monitored_tickers = ['T'] #stocks to monitor
+current_price = 0.0 #reset current_price variable on each run
+share_qty = 1 #how many shares to buy/sell at a time
+log_file = "transaction-log.csv" #CSV to log output to
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
@@ -48,7 +44,13 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
-#plot data using matplotlib
+#function to append data to CSV log
+def append_to_log(action, status, ticker, current_price):
+	with open(log_file, 'a', newline='') as file:
+		writer = csv.writer(file)
+		writer.writerow([action, status, str(date.today()), ticker, str(current_price)])
+
+#function to plot data using matplotlib
 def generate_plot(actual_data, day_ema, weekly_ema, ticker):
 	ax = plt.gca()
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
@@ -59,7 +61,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker):
 	plt.grid()
 	plt.show()
 
-#prompt user to continue with action
+#function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
 	if action == "BUY":
 		answer = None
@@ -69,13 +71,9 @@ def prompt_user(action, ticker, current_price):
 				#buy qty of specified stock from Robinhood
 				#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
 				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				with open('transaction-log.csv', 'a', newline='') as file:
-				    writer = csv.writer(file)
-				    writer.writerow([action, ticker, str(date.today()), str(current_price), "COMPLETE"])
+				append_to_log(action, "COMPLETE", ticker, current_price)
 			elif answer == "n": 
-				with open('transaction-log.csv', 'a', newline='') as file:
-					writer = csv.writer(file)
-					writer.writerow([action, ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
 		 		print("Please enter y or n")
 	elif action == "SELL":
@@ -86,18 +84,17 @@ def prompt_user(action, ticker, current_price):
 				#sell qty of specified stock from Robinhood
 				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				with open('transaction-log.csv', 'a', newline='') as file:
-					writer = csv.writer(file)
-					writer.writerow([action, ticker, str(date.today()), str(current_price), "COMPLETE"])
+				append_to_log(action, "COMPLETE", ticker, current_price)
 			elif answer == "n": 
-				with open('transaction-log.csv', 'a', newline='') as file:
-					writer = csv.writer(file)
-					writer.writerow([action, ticker, str(date.today()), str(current_price), "MANUALLY CANCELLED"])
+				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
 		 		print("Please enter y or n")
 
-
 def main():
+	#log start of daily run
+	append_to_log("DAILY RUN", "STARTED", "N/A", "N/A")
+
+	#iterate through each ticker in array and run daily checks
 	for ticker in monitored_tickers:
 		#set variables
 		day_emas = []
@@ -156,10 +153,10 @@ def main():
 			print("Sell Trigger: " + str(sell))
 		print("____________________ ^ SELL TRIGGERS ^ ____________________")
 
-		#generate_plot(actual_data, day_ema, weekly_ema, ticker) #view the graph for a specified stock
+		#generate_plot(actual_data, day_ema, weekly_ema, ticker) #view the graph for a specified stock - used for testing; this will hold up code execution until the graph window is exited
 
 		#if the latest buy trigger is today's date, place Robinhood order
-		if str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
+		if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK BUY HAS BEEN TRIGGERED #####")
 			with open('transaction-log.csv', 'a', newline='') as file:
 						writer = csv.writer(file)
@@ -172,6 +169,7 @@ def main():
 			#plot data with matplotlib, this will hold up code execution until the graph window is exited
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
+			#confirm action with user
 			prompt_user("BUY", ticker, current_price)
 
 		#if the latest sell trigger is today's date, sell shares of that stock
@@ -188,15 +186,13 @@ def main():
 			#plot data with matplotlib, this will hold up code execution until the graph window is exited
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
+			#confirm action with user
 			prompt_user("SELL", ticker, current_price)
 			
-
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
-	with open('transaction-log.csv', 'a', newline='') as file:
-		writer = csv.writer(file)
-		writer.writerow(["DAILY RUN", str(date.today()), "COMPLETE"])
+	append_to_log("DAILY RUN", "COMPLETE", "N/A", "N/A")
 
 	robin_stocks.authentication.logout()
 
