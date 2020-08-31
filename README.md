@@ -27,7 +27,7 @@ Set `store_session=True` in the Robinhood login calls to store your Robinhood ac
 ## Running
 Run `trader.py` daily at 4:10PM EST. This can be accomplished with a cronjob or similar task, depending on your OS.
 
-Cronjob to execute `run_trader.sh` script:
+Example cronjob:
 `10 16 * * * cd /path/to/project_folder/ && $(which python3) trader.py`
 
 ## Notes
