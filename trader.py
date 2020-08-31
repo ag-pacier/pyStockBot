@@ -19,6 +19,7 @@ import csv
 import time
 import robin_stocks
 from datetime import date
+from datetime import datetime
 from dotenv import load_dotenv
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
@@ -48,7 +49,7 @@ ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 def append_to_log(action, status, ticker, current_price):
 	with open(log_file, 'a', newline='') as file:
 		writer = csv.writer(file)
-		writer.writerow([action, status, str(date.today()), ticker, str(current_price)])
+		writer.writerow([action, status, str(datetime.now()), ticker, str(current_price)])
 
 #function to plot data using matplotlib
 def generate_plot(actual_data, day_ema, weekly_ema, ticker):
@@ -153,8 +154,6 @@ def main():
 			print("Sell Trigger: " + str(sell))
 		print("____________________ ^ SELL TRIGGERS ^ ____________________")
 
-		#generate_plot(actual_data, day_ema, weekly_ema, ticker) #view the graph for a specified stock - used for testing; this will hold up code execution until the graph window is exited
-
 		#if the latest buy trigger is today's date, place Robinhood order
 		if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK BUY HAS BEEN TRIGGERED #####")
@@ -187,6 +186,7 @@ def main():
 			#confirm action with user
 			prompt_user("SELL", ticker, current_price)
 			
+		#generate_plot(actual_data, day_ema, weekly_ema, ticker) #view the graph for a specified stock - used for testing; this will hold up code execution until the graph window is exited
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
