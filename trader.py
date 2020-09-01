@@ -135,7 +135,7 @@ def prompt_user(action, ticker, current_price):
 #log into Robinhood using credentials in the .env file
 def rs_login():
 	print("Logging you into: " + ROBINHOOD_USERNAME)
-	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
+	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=True)
 
 def main():
 	#log start of daily run
