@@ -33,11 +33,16 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set global variables
-monitored_tickers = ['SAIC', 'T'] #stocks to monitor
+monitored_tickers = [] #stocks to monitor
 current_price = 0.0 #reset current_price variable on each run
 share_qty = 1 #how many shares to buy/sell at a time
 log_file = "transaction-log.csv" #CSV to log output to
-ticker_max_price = 30.00
+mt_file = "monitored-tickers.csv" #CSV to store monitored tickers between each run
+
+with open(mt_file, 'r') as ticker_file:
+	csv_reader = csv.reader(ticker_file)
+	for row in csv_reader:
+		monitored_tickers.append(row[0])
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
@@ -132,18 +137,9 @@ def rs_login():
 	print("Logging you into: " + ROBINHOOD_USERNAME)
 	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 
-#function to query Robinhood for all stock tickers with a specified tag (eg. "technology") and update monitored_tickers array with all stocks under the value of ticker_max_price
-def update_tickers_from_tag(tag):
-	rs_login()
-	for stock in robin_stocks.get_all_stocks_from_market_tag(tag):
-		if float(stock['ask_price']) < 30.00:
-			print(stock['symbol'])
-
 def main():
 	#log start of daily run
 	append_to_log("DAILY RUN", "STARTED", "N/A", "N/A")
-
-	update_tickers_from_tag("technology")
 
 	#iterate through each ticker in array and run daily checks
 	for ticker in monitored_tickers:
