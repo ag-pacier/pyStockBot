@@ -23,6 +23,7 @@ from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
 from yahoo_fin import stock_info as si
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import pandas as pd
 
 #load and set env variables
@@ -49,17 +50,35 @@ def append_to_log(action, status, ticker, current_price):
 		writer = csv.writer(file)
 		writer.writerow([action, status, str(datetime.now()), ticker, str(current_price)])
 
+#returns a date object given an original date and a delta (number of months) to add/subtract by
+def find_month_delta(date, delta):
+    m, y = (date.month+delta) % 12, date.year + ((date.month)+delta-1) // 12
+    return date.replace(month=m, year=y)
+
 #function to plot data using matplotlib
 def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
+	#set graph's start and end dates
+	graph_months_before_today = 18 #how many months before today to zoom graph into. Default is 18 months
+	graph_start_date = find_month_delta(date.today(), -graph_months_before_today) #calculate the date when the graph starts plotting (minimum x). Default is 18 months before today's date
+	graph_end_date = find_month_delta(date.today(), 1) #calculate the date when the graph stops plotting (maximum x). Default is a month after today's date
+	
+	#axis setup
 	ax = plt.gca()
+	ax.xaxis.set_major_locator(mdates.MonthLocator())
+	ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+
+	#plot data
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
 	day_ema.plot(ax=ax,label='day ema')
 	weekly_ema.plot(ax=ax,label='weekly ema')
+
+	#graph settings
 	plt.legend(loc='best')
 	plt.title(ticker + " " + action + " " + str(date.today()))
 	plt.grid()
-	#plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
-	plt.savefig("graph-exports/" + action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
+	plt.xlim(graph_start_date, graph_end_date) #zoom graph into more current data. This script collects stock data several years back, which we need to process but dont need to plot
+	plt.savefig("graph-exports/" + action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image
+	plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
 
 #function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
