@@ -20,7 +20,7 @@ Test the script with: `python3 trader.py`.
 Buy triggers can be evaluated using this [calculator](https://dqydj.com/stock-return-calculator/) to view estimated returns if you had purchased a given stock on the date when the script triggered the buy.
 
 ## Customization
-Modify `monitored_tickers` array with the stocks you want to monitor for buy/sell triggers.
+Run `populate-tickers.py` to specify criteria for monitored stocks and add them to a CSV that `trader.py` reads from to populate the `monitored_tickers` array with the stocks you want to monitor for buy/sell triggers.
 
 Set `store_session=True` in the Robinhood login calls to store your Robinhood account in the session header. This will remove the MFA prompt requirement when a buy or sell has been triggered, allowing the script to place the order without needing your MFA code for each action.
 
