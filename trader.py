@@ -68,7 +68,7 @@ def prompt_user(action, ticker, current_price):
 	if action == "BUY":
 		answer = None
 		while answer not in ("y", "n"): 
-			answer = input("Proceed with buy? (y/n) ") 
+			answer = input("Proceed with " + action + "? (y/n) ") 
 			if answer == "y": 
 				#buy qty of specified stock from Robinhood
 				try:
@@ -85,7 +85,7 @@ def prompt_user(action, ticker, current_price):
 	elif action == "SELL":
 		answer = None
 		while answer not in ("y", "n"): 
-			answer = input("Proceed with sell? (y/n) ") 
+			answer = input("Proceed with " + action + "? (y/n) ") 
 			if answer == "y": 
 				#sell qty of specified stock from Robinhood
 				try:
@@ -166,7 +166,10 @@ def main():
 		#if the latest buy trigger is today's date, place Robinhood order
 		if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK BUY HAS BEEN TRIGGERED #####")
-			append_to_log("BUY", "STARTED", ticker, current_price)
+
+			action = "BUY"
+
+			append_to_log(action, "STARTED", ticker, current_price)
 
 			#log into Robinhood using credentials in the .env file
 			print("Logging you into: " + ROBINHOOD_USERNAME)
@@ -176,14 +179,22 @@ def main():
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
 			#confirm action with user
-			prompt_user("BUY", ticker, current_price)
+			prompt_user(action, ticker, current_price)
 
-			append_to_log("BUY", "COMPLETED", ticker, current_price)
+			append_to_log(action, "COMPLETED", ticker, current_price)
+
+			try:
+				robin_stocks.authentication.logout() #logout of Robinhood
+			except Exception as err:
+				print(err)
 
 		#if the latest sell trigger is today's date, sell shares of that stock
 		elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 			print("##### STOCK SELL HAS BEEN TRIGGERED #####")
-			append_to_log("BUY", "STARTED", ticker, current_price)
+
+			action = "SELL"
+
+			append_to_log(action, "STARTED", ticker, current_price)
 
 			#log into Robinhood using credentials in the .env file
 			print("Logging you into: " + ROBINHOOD_USERNAME)
@@ -193,15 +204,21 @@ def main():
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
 			#confirm action with user
-			prompt_user("SELL", ticker, current_price)
+			prompt_user(action, ticker, current_price)
+
+			#log completion of action
+			append_to_log(action, "COMPLETED", ticker, current_price)
+
+			try:
+				robin_stocks.authentication.logout() #logout of Robinhood
+			except Exception as err:
+				print(err)
 
 		generate_plot(actual_data, day_ema, weekly_ema, ticker)
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
 	append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
-
-	robin_stocks.authentication.logout()
 
 if __name__ == "__main__":
     main()
