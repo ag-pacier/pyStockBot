@@ -33,7 +33,7 @@ ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
 #set global variables
-monitored_tickers = ['T'] #stocks to monitor
+monitored_tickers = ['SAIC', 'T'] #stocks to monitor
 current_price = 0.0 #reset current_price variable on each run
 share_qty = 1 #how many shares to buy/sell at a time
 log_file = "transaction-log.csv" #CSV to log output to
@@ -87,6 +87,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	plt.xlim(graph_start_date, graph_end_date) #zoom graph into more current data. This script collects stock data several years back, which we need to process but dont need to plot
 	plt.savefig("graph-exports/" + action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image
 	#plt.show() #show interactive graph in popup window. This will hold up code execution until the graph window is exited
+	plt.clf() #clear plot so the script can reuse the same variables
 
 #function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
@@ -99,7 +100,7 @@ def prompt_user(action, ticker, current_price):
 				try:
 					robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
 					print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-					append_to_log(action, "COMPLETE", ticker, current_price)
+					append_to_log(action, "COMPLETED", ticker, current_price)
 				except Exception as err:
 					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
 					append_to_log(action, "ERROR: " + err, ticker, current_price)
@@ -116,7 +117,7 @@ def prompt_user(action, ticker, current_price):
 				try:
 					robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 					print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-					append_to_log(action, "COMPLETE", ticker, current_price)
+					append_to_log(action, "COMPLETED", ticker, current_price)
 				except Exception as err:
 					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
 					append_to_log(action, "ERROR: " + err, ticker, current_price)
@@ -210,8 +211,6 @@ def main():
 			#confirm action with user
 			prompt_user(action, ticker, current_price)
 
-			append_to_log(action, "COMPLETED", ticker, current_price)
-
 			try:
 				robin_stocks.authentication.logout() #logout of Robinhood
 			except Exception as err:
@@ -233,9 +232,6 @@ def main():
 
 			#confirm action with user
 			prompt_user(action, ticker, current_price)
-
-			#log completion of action
-			append_to_log(action, "COMPLETED", ticker, current_price)
 
 			try:
 				robin_stocks.authentication.logout() #logout of Robinhood
