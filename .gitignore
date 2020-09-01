@@ -1,4 +1,5 @@
 .env
+monitored-tickers.csv
 transaction-log.csv
 graph-exports/
 .DS_Store
