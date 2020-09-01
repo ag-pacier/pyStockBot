@@ -61,7 +61,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	graph_months_before_today = 18 #how many months before today to zoom graph into. Default is 18 months
 	graph_start_date = find_month_delta(date.today(), -graph_months_before_today) #calculate the date when the graph starts plotting (minimum x). Default is 18 months before today's date
 	graph_end_date = find_month_delta(date.today(), 1) #calculate the date when the graph stops plotting (maximum x). Default is a month after today's date
-	
+
 	#axis setup
 	ax = plt.gca()
 	ax.xaxis.set_major_locator(mdates.MonthLocator())
@@ -71,6 +71,10 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
 	day_ema.plot(ax=ax,label='day ema')
 	weekly_ema.plot(ax=ax,label='weekly ema')
+
+	#set rotation of x axis labels to 90 degrees to more easily view the dates
+	for label in ax.get_xticklabels():
+		label.set_rotation(90)
 
 	#graph settings
 	plt.legend(loc='best')
@@ -235,7 +239,7 @@ def main():
 				print(err)
 
 		generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
-		time.sleep(10) #sleep for a minute to wait out the query limit on the free AlphaVantage API
+		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
 	append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
