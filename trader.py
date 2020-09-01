@@ -52,16 +52,16 @@ def append_to_log(action, status, ticker, current_price):
 		writer.writerow([action, status, str(datetime.now()), ticker, str(current_price)])
 
 #function to plot data using matplotlib
-def generate_plot(actual_data, day_ema, weekly_ema, ticker):
+def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	ax = plt.gca()
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
 	day_ema.plot(ax=ax,label='day ema')
 	weekly_ema.plot(ax=ax,label='weekly ema')
 	plt.legend(loc='best')
-	plt.title(ticker + " " + str(date.today()))
+	plt.title(ticker + " " action + " " + str(date.today()))
 	plt.grid()
 	#plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
-	plt.savefig("graph-exports/" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
+	plt.savefig("graph-exports/" action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
 
 #function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
@@ -76,8 +76,8 @@ def prompt_user(action, ticker, current_price):
 					print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 					append_to_log(action, "COMPLETE", ticker, current_price)
 				except Exception as err:
-    				print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
-    				append_to_log(action, "ERROR: " + err, ticker, current_price)
+					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
+					append_to_log(action, "ERROR: " + err, ticker, current_price)
 			elif answer == "n": 
 				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
@@ -94,7 +94,7 @@ def prompt_user(action, ticker, current_price):
 					append_to_log(action, "COMPLETE", ticker, current_price)
 				except Exception as err:
 					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
-    				append_to_log(action, "ERROR: " + err, ticker, current_price)
+					append_to_log(action, "ERROR: " + err, ticker, current_price)
 			elif answer == "n": 
 				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
@@ -176,7 +176,7 @@ def main():
 			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 
 			#plot data with matplotlib
-			generate_plot(actual_data, day_ema, weekly_ema, ticker)
+			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
 			#confirm action with user
 			prompt_user(action, ticker, current_price)
@@ -201,7 +201,7 @@ def main():
 			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 
 			#plot data with matplotlib
-			generate_plot(actual_data, day_ema, weekly_ema, ticker)
+			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
 			#confirm action with user
 			prompt_user(action, ticker, current_price)
@@ -214,8 +214,8 @@ def main():
 			except Exception as err:
 				print(err)
 
-		generate_plot(actual_data, day_ema, weekly_ema, ticker)
-		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
+		generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
+		time.sleep(10) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
 	append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
