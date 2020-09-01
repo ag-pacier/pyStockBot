@@ -71,9 +71,13 @@ def prompt_user(action, ticker, current_price):
 			answer = input("Proceed with buy? (y/n) ") 
 			if answer == "y": 
 				#buy qty of specified stock from Robinhood
-				robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
-				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				append_to_log(action, "COMPLETE", ticker, current_price)
+				try:
+					robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+					print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+					append_to_log(action, "COMPLETE", ticker, current_price)
+				except Exception as err:
+    				print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
+    				append_to_log(action, "ERROR: " + err, ticker, current_price)
 			elif answer == "n": 
 				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
@@ -84,9 +88,13 @@ def prompt_user(action, ticker, current_price):
 			answer = input("Proceed with sell? (y/n) ") 
 			if answer == "y": 
 				#sell qty of specified stock from Robinhood
-				robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
-				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
-				append_to_log(action, "COMPLETE", ticker, current_price)
+				try:
+					robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+					print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
+					append_to_log(action, "COMPLETE", ticker, current_price)
+				except Exception as err:
+					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
+    				append_to_log(action, "ERROR: " + err, ticker, current_price)
 			elif answer == "n": 
 				append_to_log(action, "MANUALLY CANCELLED", ticker, current_price)
 			else: 
