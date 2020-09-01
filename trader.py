@@ -59,7 +59,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	plt.title(ticker + " " + action + " " + str(date.today()))
 	plt.grid()
 	#plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
-	plt.savefig("graph-exports/" action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
+	plt.savefig("graph-exports/" + action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
 
 #function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
