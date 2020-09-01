@@ -1,3 +1,4 @@
-.DS_Store
 .env
 transaction-log.csv
+graph-exports/
+.DS_Store

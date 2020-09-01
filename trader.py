@@ -58,9 +58,10 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker):
 	day_ema.plot(ax=ax,label='day ema')
 	weekly_ema.plot(ax=ax,label='weekly ema')
 	plt.legend(loc='best')
-	plt.title(ticker)
+	plt.title(ticker + " " + str(date.today()))
 	plt.grid()
-	plt.show()
+	#plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
+	plt.savefig("graph-exports/" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
 
 #function to prompt user to continue with action
 def prompt_user(action, ticker, current_price):
@@ -70,7 +71,7 @@ def prompt_user(action, ticker, current_price):
 			answer = input("Proceed with buy? (y/n) ") 
 			if answer == "y": 
 				#buy qty of specified stock from Robinhood
-				#robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+				robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
 				print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 				append_to_log(action, "COMPLETE", ticker, current_price)
 			elif answer == "n": 
@@ -83,7 +84,7 @@ def prompt_user(action, ticker, current_price):
 			answer = input("Proceed with sell? (y/n) ") 
 			if answer == "y": 
 				#sell qty of specified stock from Robinhood
-				#robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+				robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
 				print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 				append_to_log(action, "COMPLETE", ticker, current_price)
 			elif answer == "n": 
@@ -163,7 +164,7 @@ def main():
 			print("Logging you into: " + ROBINHOOD_USERNAME)
 			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 
-			#plot data with matplotlib, this will hold up code execution until the graph window is exited
+			#plot data with matplotlib
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
 			#confirm action with user
@@ -180,13 +181,13 @@ def main():
 			print("Logging you into: " + ROBINHOOD_USERNAME)
 			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
 
-			#plot data with matplotlib, this will hold up code execution until the graph window is exited
+			#plot data with matplotlib
 			generate_plot(actual_data, day_ema, weekly_ema, ticker)
 
 			#confirm action with user
 			prompt_user("SELL", ticker, current_price)
-			
-		#generate_plot(actual_data, day_ema, weekly_ema, ticker) #view the graph for a specified stock - used for testing; this will hold up code execution until the graph window is exited
+
+		generate_plot(actual_data, day_ema, weekly_ema, ticker)
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
