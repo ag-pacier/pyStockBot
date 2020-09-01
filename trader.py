@@ -56,7 +56,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	day_ema.plot(ax=ax,label='day ema')
 	weekly_ema.plot(ax=ax,label='weekly ema')
 	plt.legend(loc='best')
-	plt.title(ticker + " " action + " " + str(date.today()))
+	plt.title(ticker + " " + action + " " + str(date.today()))
 	plt.grid()
 	#plt.show() #show graph in popup window. This will hold up code execution until the graph window is exited
 	plt.savefig("graph-exports/" action + "-" + ticker + "-" + str(datetime.now()) + ".png") #exports graph to image with a filename similar to "RPD-"
