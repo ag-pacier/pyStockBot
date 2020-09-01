@@ -67,6 +67,10 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	ax.xaxis.set_major_locator(mdates.MonthLocator())
 	ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
 
+	#add labels to axis
+	plt.xlabel('date')
+	plt.ylabel('price')
+
 	#plot data
 	actual_data['4. close'].plot(ax=ax,label='Actual Price')
 	day_ema.plot(ax=ax,label='day ema')
