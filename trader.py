@@ -100,6 +100,11 @@ def prompt_user(action, ticker, current_price):
 			else: 
 		 		print("Please enter y or n")
 
+def rs_login():
+	#log into Robinhood using credentials in the .env file
+	print("Logging you into: " + ROBINHOOD_USERNAME)
+	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
+
 def main():
 	#log start of daily run
 	append_to_log("DAILY RUN", "STARTED", "N/A", "N/A")
@@ -171,9 +176,8 @@ def main():
 
 			append_to_log(action, "STARTED", ticker, current_price)
 
-			#log into Robinhood using credentials in the .env file
-			print("Logging you into: " + ROBINHOOD_USERNAME)
-			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
+			#log into Robinhood
+			rs_login()
 
 			#plot data with matplotlib
 			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
@@ -196,9 +200,8 @@ def main():
 
 			append_to_log(action, "STARTED", ticker, current_price)
 
-			#log into Robinhood using credentials in the .env file
-			print("Logging you into: " + ROBINHOOD_USERNAME)
-			login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
+			#log into Robinhood
+			rs_login()
 
 			#plot data with matplotlib
 			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
