@@ -247,7 +247,7 @@ def main():
 		except Exception as err:
 			print(err)
 
-		generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
+		#generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
 
 	#log completion of daily run
