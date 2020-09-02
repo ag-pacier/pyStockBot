@@ -200,49 +200,52 @@ def main():
 			print("Sell Trigger: " + str(sell))
 		print("____________________ ^ SELL TRIGGERS ^ ____________________")
 
-		#if the latest buy trigger is today's date, place Robinhood order
-		if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
-			print("##### STOCK BUY HAS BEEN TRIGGERED #####")
+		try:
+			#if the latest buy trigger is today's date, place Robinhood order
+			if str(date.today()) == str(buy_triggers[-1][0].to_pydatetime())[:10]:
+				print("##### STOCK BUY HAS BEEN TRIGGERED #####")
 
-			action = "BUY"
+				action = "BUY"
 
-			append_to_log(action, "STARTED", ticker, current_price)
+				append_to_log(action, "STARTED", ticker, current_price)
 
-			#log into Robinhood
-			rs_login()
+				#log into Robinhood
+				rs_login()
 
-			#plot data with matplotlib
-			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
+				#plot data with matplotlib
+				generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
-			#confirm action with user
-			prompt_user(action, ticker, current_price)
+				#confirm action with user
+				prompt_user(action, ticker, current_price)
 
-			try:
-				robin_stocks.authentication.logout() #logout of Robinhood
-			except Exception as err:
-				print(err)
+				try:
+					robin_stocks.authentication.logout() #logout of Robinhood
+				except Exception as err:
+					print(err)
 
-		#if the latest sell trigger is today's date, sell shares of that stock
-		elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
-			print("##### STOCK SELL HAS BEEN TRIGGERED #####")
+			#if the latest sell trigger is today's date, sell shares of that stock
+			elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
+				print("##### STOCK SELL HAS BEEN TRIGGERED #####")
 
-			action = "SELL"
+				action = "SELL"
 
-			append_to_log(action, "STARTED", ticker, current_price)
+				append_to_log(action, "STARTED", ticker, current_price)
 
-			#log into Robinhood
-			rs_login()
+				#log into Robinhood
+				rs_login()
 
-			#plot data with matplotlib
-			generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
+				#plot data with matplotlib
+				generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
-			#confirm action with user
-			prompt_user(action, ticker, current_price)
+				#confirm action with user
+				prompt_user(action, ticker, current_price)
 
-			try:
-				robin_stocks.authentication.logout() #logout of Robinhood
-			except Exception as err:
-				print(err)
+				try:
+					robin_stocks.authentication.logout() #logout of Robinhood
+				except Exception as err:
+					print(err)
+		except Exception as err:
+			print(err)
 
 		generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
 		time.sleep(60) #sleep for a minute to wait out the query limit on the free AlphaVantage API
