@@ -54,7 +54,7 @@ ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 def append_to_log(action, status, ticker, current_price):
 	with open(log_file, 'a', newline='') as file:
 		writer = csv.writer(file)
-		writer.writerow([action, status, str(datetime.now()), ticker, str(current_price)])
+		writer.writerow([action, status, ticker, str(datetime.now()), str(current_price)])
 
 #returns a date object given an original date and a delta (number of months) to add/subtract by
 def find_month_delta(date, delta):
