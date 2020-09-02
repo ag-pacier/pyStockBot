@@ -104,7 +104,7 @@ def prompt_user(action, ticker, current_price):
 			if answer == "y": 
 				#buy qty of specified stock from Robinhood
 				try:
-					robin_stocks.order_buy_market(ticker, share_qty) #uncomment this when you want the script to actually place the buy in Robinhood
+					robin_stocks.order_buy_market(ticker, share_qty) #place the buy in Robinhood
 					print("Bought " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 					append_to_log(action, "COMPLETED", ticker, current_price)
 				except Exception as err:
@@ -121,7 +121,7 @@ def prompt_user(action, ticker, current_price):
 			if answer == "y": 
 				#sell qty of specified stock from Robinhood
 				try:
-					robin_stocks.order_sell_market(ticker, share_qty) #uncomment this when you want the script to actually place the sell in Robinhood
+					robin_stocks.order_sell_market(ticker, share_qty) #place the sell in Robinhood
 					print("Sold " + str(share_qty) + " share(s) of " + ticker + " on " + str(date.today()) + " at $" + str(current_price))
 					append_to_log(action, "COMPLETED", ticker, current_price)
 				except Exception as err:
@@ -216,7 +216,15 @@ def main():
 				generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
 				#confirm action with user
-				prompt_user(action, ticker, current_price)
+				#prompt_user(action, ticker, current_price)
+
+				#buy qty of specified stock from Robinhood
+				try:
+					robin_stocks.order_buy_market(ticker, share_qty) #place the buy in Robinhood
+					append_to_log(action, "COMPLETED", ticker, current_price)
+				except Exception as err:
+					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
+					append_to_log(action, "ERROR: " + err, ticker, current_price)
 
 				try:
 					robin_stocks.authentication.logout() #logout of Robinhood
@@ -238,7 +246,15 @@ def main():
 				generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
 				#confirm action with user
-				prompt_user(action, ticker, current_price)
+				#prompt_user(action, ticker, current_price)
+
+				#sell qty of specified stock from Robinhood
+				try:
+					robin_stocks.order_sell_market(ticker, share_qty) #place the sell in Robinhood
+					append_to_log(action, "COMPLETED", ticker, current_price)
+				except Exception as err:
+					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
+					append_to_log(action, "ERROR: " + err, ticker, current_price)
 
 				try:
 					robin_stocks.authentication.logout() #logout of Robinhood
