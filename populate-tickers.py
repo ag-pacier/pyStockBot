@@ -34,7 +34,7 @@ def update_tickers_from_tag(tag, ticker_max_price):
 	added_ticker_count = 0
 	for stock in robin_stocks.get_all_stocks_from_market_tag(tag):
 		if stock['symbol'] not in monitored_tickers:
-			if float(stock['ask_price']) < ticker_max_price:
+			if float(stock['ask_price']) > 1.00 and float(stock['ask_price']) < ticker_max_price:
 				append_ticker_to_csv(stock['symbol'])
 				added_ticker_count += 1
 	print("Added " + str(added_ticker_count) + " to " + mt_file)
