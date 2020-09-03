@@ -226,11 +226,6 @@ def main():
 					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
 					append_to_log(action, "ERROR: " + err, ticker, current_price)
 
-				try:
-					robin_stocks.authentication.logout() #logout of Robinhood
-				except Exception as err:
-					print(err)
-
 			#if the latest sell trigger is today's date, sell shares of that stock
 			elif str(date.today()) == str(sell_triggers[-1][0].to_pydatetime())[:10]:
 				print("##### STOCK SELL HAS BEEN TRIGGERED #####")
@@ -256,10 +251,6 @@ def main():
 					print('Error ' + action.lower() + 'ing ' + ticker + ": " + err)
 					append_to_log(action, "ERROR: " + err, ticker, current_price)
 
-				try:
-					robin_stocks.authentication.logout() #logout of Robinhood
-				except Exception as err:
-					print(err)
 		except Exception as err:
 			print(err)
 
@@ -268,6 +259,11 @@ def main():
 
 	#log completion of daily run
 	append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
+
+	try:
+		robin_stocks.authentication.logout() #logout of Robinhood
+	except Exception as err:
+		print(err)
 
 if __name__ == "__main__":
     main()
