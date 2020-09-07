@@ -45,12 +45,6 @@ pd.set_option("display.max_rows", None, "display.max_columns", None)
 ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
-#load monitored stock tickers from CSV file
-with open(mt_file, 'r') as ticker_file:
-	csv_reader = csv.reader(ticker_file)
-	for row in csv_reader:
-		monitored_tickers.append(row[0])
-
 #function to append data to CSV log
 def append_to_log(action, status, ticker, current_price):
 	with open(log_file, 'a', newline='') as file:
@@ -141,6 +135,12 @@ def rs_login():
 def main():
 	#log start of daily run
 	append_to_log("DAILY RUN", "STARTED", "N/A", "N/A")
+
+	#load monitored stock tickers from CSV file
+	with open(mt_file, 'r') as ticker_file:
+		csv_reader = csv.reader(ticker_file)
+		for row in csv_reader:
+			monitored_tickers.append(row[0])
 
 	#iterate through each ticker in array and run daily checks
 	for ticker in monitored_tickers:
