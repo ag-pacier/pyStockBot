@@ -31,4 +31,6 @@ Example cronjob:
 `10 16 * * * cd /path/to/project_folder/ && $(which python3) trader.py`
 
 ## Notes
+This project is currently in the testing phase. My current setup is a Raspberry Pi 3 running this script via a cronjob every day.
+
 If you plan on deploying this script to a Mac environment, you may have an issue with the access control mechanism that was introduced in Mojave where cron jobs can no longer access certain directories because they hold sensitive data. You can fix this by following the instructions on this [link](https://blog.bejarano.io/fixing-cron-jobs-in-mojave/). Be sure to understand the security concerns associated with this, and modify your environment accordingly.
