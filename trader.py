@@ -39,16 +39,17 @@ share_qty = 1 #how many shares to buy/sell at a time
 log_file = "transaction-log.csv" #CSV to log output to
 mt_file = "monitored-tickers.csv" #CSV to store monitored tickers between each run
 
-with open(mt_file, 'r') as ticker_file:
-	csv_reader = csv.reader(ticker_file)
-	for row in csv_reader:
-		monitored_tickers.append(row[0])
-
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
 #Alpha Vantage connection info
 ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+
+#load monitored stock tickers from CSV file
+with open(mt_file, 'r') as ticker_file:
+	csv_reader = csv.reader(ticker_file)
+	for row in csv_reader:
+		monitored_tickers.append(row[0])
 
 #function to append data to CSV log
 def append_to_log(action, status, ticker, current_price):
