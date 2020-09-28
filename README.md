@@ -31,7 +31,7 @@ Example cronjob:
 `10 16 * * * cd /path/to/project_folder/ && $(which python3) trader.py`
 
 ## Notes
-> By now I have pretty much abandoned this project, as stocks and finance are not really my passion. A lot of the building blocks for EMA/SMA crossover event handling and using the Robinhood API are here, so I hope someone out there can get some use out of this or at least use it as a reference to build something cool.
+> By now I have pretty much abandoned this project, as stocks and finance are not really my passion; this was mainly a project to quickly teach a friend how to properly use environment variables, and I got interested in building the algorithm he was describing. A lot of the building blocks for EMA/SMA crossover event handling and using the Robinhood API are here, so I hope someone out there can get some use out of this or at least use it as a reference to build something cool.
 
 ~~This project is currently in the testing phase. My current setup is a Raspberry Pi 3 running this script via a cronjob every day.~~
 
