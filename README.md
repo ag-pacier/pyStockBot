@@ -5,7 +5,7 @@ In the future, this will be a small web site that will manage both ends of setti
 ## Getting Started
 
 You need [Docker Desktop](https://www.docker.com/products/docker-desktop) and [Python 3.](https://www.python.org/downloads/)
-Once installed, clone this repo onto your PC (download as a ZIP, use GitHub Desktop, be fancy and CLI git*, pick your poison*).
+Once installed, clone this repo onto your PC (download as a ZIP, use GitHub Desktop, be fancy and CLI git, *pick your poison*).
 Open up your shell of choice (Powershell for Windows, Terminal for Linux/Mac) and install the robin-stocks library:
 
 ### For Windows
