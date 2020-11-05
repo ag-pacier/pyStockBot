@@ -15,6 +15,7 @@
 import os
 import csv
 import time
+import sys
 import robin_stocks
 from datetime import date
 from datetime import datetime
@@ -39,6 +40,15 @@ current_price = 0.0 #reset current_price variable on each run
 share_qty = 1 #how many shares to buy/sell at a time
 log_file = "/logs/transaction-log.csv" #CSV to log output to
 mt_file = "/logs/monitored-tickers.csv" #CSV to store monitored tickers between each run
+#Check for mt_file and exits if it doesn't exist
+if os.path.isfile(mt_file):
+	print('Monitored tickers exists and will be used!')
+else:
+	with open(mt_file, 'a', newline='') as file:
+		pass
+	print('No monitored ticker file found. Created in the location needed and exiting.')
+	sys.exit(1)
+
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
