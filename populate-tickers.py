@@ -8,10 +8,11 @@
 import csv
 import os
 import robin_stocks
-from dotenv import load_dotenv
+#No longer need dotenv since we will be using actual environmental variables
+#from dotenv import load_dotenv
 
 #load and set env variables
-load_dotenv()
+#load_dotenv()
 ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 
