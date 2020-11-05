@@ -1,0 +1,4 @@
+#Replace these with your own!
+ROBINHOOD_USERNAME="user"
+ROBINHOOD_PASSWORD="pass"
+ALPHA_VANTAGE_API_KEY="api"
