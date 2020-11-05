@@ -89,7 +89,7 @@ def generate_plot(actual_data, day_ema, weekly_ema, ticker, action):
 	plt.title(ticker + " " + action + " " + str(date.today()))
 	plt.grid()
 	plt.xlim(graph_start_date, graph_end_date) #zoom graph into more current data. This script collects stock data several years back, which we need to process but dont need to plot
-	plt.savefig("graph-exports/" + action + "-" + ticker + "-" + str(datetime.now())[:16].replace(':', '.') + ".png") #exports graph to image
+	plt.savefig("/logs/graph-exports/" + action + "-" + ticker + "-" + str(datetime.now())[:16].replace(':', '.') + ".png") #exports graph to image
 	#plt.show() #show interactive graph in popup window. This will hold up code execution until the graph window is exited
 	plt.clf() #clear plot so the script can reuse the same variables
 
