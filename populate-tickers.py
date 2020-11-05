@@ -13,11 +13,11 @@ import robin_stocks
 
 #load and set env variables
 #load_dotenv()
-ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
-ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
+ROBINHOOD_USERNAME = input("Robinhood username: ")
+ROBINHOOD_PASSWORD = input("Robinhood password: ")
 
 #set variables
-mt_file = "/logs/monitored-tickers.csv"
+mt_file = "monitored-tickers.csv"
 monitored_tickers = []
 
 def append_ticker_to_csv(ticker):
@@ -28,7 +28,7 @@ def append_ticker_to_csv(ticker):
 #log into Robinhood using credentials in the .env file
 def rs_login():
 	print("Logging you into: " + ROBINHOOD_USERNAME)
-	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=False)
+	login = robin_stocks.authentication.login(username=ROBINHOOD_USERNAME, password=ROBINHOOD_PASSWORD, store_session=True)
 
 #query Robinhood for all stock tickers with a specified tag (eg. "technology") and update monitored-tickers.csv file with all stocks that have a value below ticker_max_price
 def update_tickers_from_tag(tag, ticker_max_price):
@@ -46,9 +46,13 @@ def main():
 		for row in csv_reader:
 			monitored_tickers.append(row[0])
 	rs_login()
-	tag = input("Enter tag to query: ")
-	ticker_max_price = float(input("Enter max price: "))
-	update_tickers_from_tag(tag, ticker_max_price)
+	while True:
+		tag = input("Enter tag to query: ")
+		ticker_max_price = float(input("Enter max price: "))
+		update_tickers_from_tag(tag, ticker_max_price)
+		moar = str(input("Would you like to add another(y/n): "))
+		if (moar.lower() != 'y'):
+			break
 
 if __name__ == "__main__":
     main()
