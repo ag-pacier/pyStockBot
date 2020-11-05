@@ -17,7 +17,7 @@ ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 
 #set variables
-mt_file = "monitored-tickers.csv"
+mt_file = "/logs/monitored-tickers.csv"
 monitored_tickers = []
 
 def append_ticker_to_csv(ticker):
