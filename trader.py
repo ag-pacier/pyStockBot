@@ -18,7 +18,8 @@ import time
 import robin_stocks
 from datetime import date
 from datetime import datetime
-from dotenv import load_dotenv
+#No longer need dotenv since we will be using actual environmental variables
+#from dotenv import load_dotenv
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
 from yahoo_fin import stock_info as si
@@ -27,7 +28,7 @@ import matplotlib.dates as mdates
 import pandas as pd
 
 #load and set env variables
-load_dotenv()
+#load_dotenv()
 ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
@@ -36,8 +37,8 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 monitored_tickers = [] #stocks to monitor
 current_price = 0.0 #reset current_price variable on each run
 share_qty = 1 #how many shares to buy/sell at a time
-log_file = "transaction-log.csv" #CSV to log output to
-mt_file = "monitored-tickers.csv" #CSV to store monitored tickers between each run
+log_file = "/logs/transaction-log.csv" #CSV to log output to
+mt_file = "/logs/monitored-tickers.csv" #CSV to store monitored tickers between each run
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 
@@ -50,6 +51,8 @@ def append_to_log(action, status, ticker, current_price):
 	with open(log_file, 'a', newline='') as file:
 		writer = csv.writer(file)
 		writer.writerow([action, status, ticker, str(datetime.now()), str(current_price)])
+		#Adding a print statement for now as Docker likes to use console
+		print([action, status, ticker, str(datetime.now()), str(current_price)])
 
 #returns a date object given an original date and a delta (number of months) to add/subtract by
 def find_month_delta(date, delta):
