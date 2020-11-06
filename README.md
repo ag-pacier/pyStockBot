@@ -50,5 +50,5 @@ Run the container daily at 4:10PM EST. This is shortly after the market closes f
 ## Why?!
 
 - This is a work in progress. The final product will be MUCH simpler to run. My goal is to make it a single container that handles all sides of this and can just run all the time, where ever you want it (including in the cloud!)
-- I was psyched when pycoder17 showed me this little project and sometimes we make minor changes to a friend's project not because we think we can do better but to pay homage to someone we respect
+- I was psyched when psycoder17 showed me this little project and sometimes we make minor changes to a friend's project not because we think we can do better but to pay homage to someone we respect
 - I want to continue practicing turning apps not built to be containerized into containers.
