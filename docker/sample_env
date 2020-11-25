@@ -1,4 +1,7 @@
 #Replace these with your own!
+#Please be sure to remove "
 ROBINHOOD_USERNAME="user"
 ROBINHOOD_PASSWORD="pass"
 ALPHA_VANTAGE_API_KEY="api"
+STOCK_TAG="tech"
+STOCK_MAX_PRICE="0.00"
