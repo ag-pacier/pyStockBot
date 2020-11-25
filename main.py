@@ -1,6 +1,6 @@
 #Combined python file to be run in a container
 
-import csv, os, time, sys, robin_stocks
+import csv, time, sys, robin_stocks
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
 from yahoo_fin import stock_info as si
@@ -9,11 +9,14 @@ import matplotlib.dates as mdates
 import pandas as pd
 from datetime import date
 from datetime import datetime
+from os import getenv
 
 #Set environmental variables
-ROBINHOOD_USERNAME = os.getenv("ROBINHOOD_USERNAME")
-ROBINHOOD_PASSWORD = os.getenv("ROBINHOOD_PASSWORD")
-ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
+ROBINHOOD_USERNAME = getenv("ROBINHOOD_USERNAME")
+ROBINHOOD_PASSWORD = getenv("ROBINHOOD_PASSWORD")
+ALPHA_VANTAGE_API_KEY = getenv("ALPHA_VANTAGE_API_KEY")
+STOCK_TAG = getenv("STOCK_TAG")
+STOCK_MAX_PRICE = getenv("STOCK_TAG")
 
 #Set additional variables
 mt_file = "monitored-tickers.csv"
