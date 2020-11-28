@@ -3,3 +3,8 @@ monitored-tickers.csv
 transaction-log.csv
 graph-exports/
 .DS_Store
+#ignoring vscode stuff
+.vscode/
+
+#ignoring venv
+venv/
