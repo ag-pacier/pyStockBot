@@ -245,3 +245,5 @@ def main():
     append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
 
 
+if __name__ == "__main__":
+    main()
