@@ -16,7 +16,7 @@ ROBINHOOD_USERNAME = getenv("ROBINHOOD_USERNAME")
 ROBINHOOD_PASSWORD = getenv("ROBINHOOD_PASSWORD")
 ALPHA_VANTAGE_API_KEY = getenv("ALPHA_VANTAGE_API_KEY")
 STOCK_TAG = getenv("STOCK_TAG")
-STOCK_MAX_PRICE = getenv("STOCK_TAG")
+STOCK_MAX_PRICE = getenv("STOCK_MAX_PRICE")
 
 #Set additional variables
 mt_file = "monitored-tickers.csv"
@@ -113,8 +113,7 @@ def populate_ticker():
         for row in csv_reader:
             monitored_tickers.append(row[0])
     rs_login()
-    ticker_max_price = float(input("Enter max price: "))
-    update_tickers_from_tag(tag, ticker_max_price)
+    update_tickers_from_tag(tag, STOCK_MAX_PRICE)
 
 def main():
     #log start of daily run
