@@ -125,6 +125,12 @@ def main():
         for row in csv_reader:
             monitored_tickers.append(row[0])
 
+    pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+    #Alpha Vantage connection info
+    ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+    ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+
     #iterate through each ticker in array and run daily checks
     for ticker in monitored_tickers:
         #set variables
@@ -135,12 +141,6 @@ def main():
         intersections = []
         sell_triggers = []
         buy_triggers = []
-
-        pd.set_option("display.max_rows", None, "display.max_columns", None)
-
-        #Alpha Vantage connection info
-        ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
-        ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
 
         #get current stock price
         current_price = si.get_live_price(ticker)
