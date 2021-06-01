@@ -136,6 +136,12 @@ def main():
         sell_triggers = []
         buy_triggers = []
 
+        pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+        #Alpha Vantage connection info
+        ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+        ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
+
         #get current stock price
         current_price = si.get_live_price(ticker)
         print("_____________________ " + ticker +
@@ -158,7 +164,7 @@ def main():
         for day in day_emas:
             for week in week_emas:
                 if week[0] == day[0]:
-                    #print("Date: " + str(day[0]) + " : day ema Price: " + str(day[1][0]) + " : week ema Price: " + str(week[1][0]))
+                    print("Date: " + str(day[0]) + " : day ema Price: " + str(day[1][0]) + " : week ema Price: " + str(week[1][0]))
                     keys.append([day[0], day[1][0], week[1][0], ticker])
                     vals.append(day[1][0] - week[1][0])
 
@@ -166,7 +172,7 @@ def main():
             if i > 0:
                 if v / vals[i-1] < 0:
                     intersections.append(keys[i])
-                    #print("Intersection Happened: " + str(keys[i]))
+                    print("Intersection Happened: " + str(keys[i]))
 
         #decide if the intersection triggers a buy or sell
         #if the week ema is less than the month ema, sell; if the week ema is more than the month ema, buy
@@ -200,9 +206,6 @@ def main():
                 #plot data with matplotlib
                 generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
-                #confirm action with user
-                #prompt_user(action, ticker, current_price)
-
                 #buy qty of specified stock from Robinhood
                 try:
                     robin_stocks.order_buy_market(
@@ -226,9 +229,6 @@ def main():
                 #plot data with matplotlib
                 generate_plot(actual_data, day_ema, weekly_ema, ticker, action)
 
-                #confirm action with user
-                #prompt_user(action, ticker, current_price)
-
                 #sell qty of specified stock from Robinhood
                 try:
                     robin_stocks.order_sell_market(
@@ -241,16 +241,7 @@ def main():
         except Exception as err:
             print(err)
 
-        #generate_plot(actual_data, day_ema, weekly_ema, ticker, "RUN")
-        # sleep for a minute to wait out the query limit on the free AlphaVantage API
-        time.sleep(60)
-
     #log completion of daily run
     append_to_log("DAILY RUN", "COMPLETED", "N/A", "N/A")
 
 
-pd.set_option("display.max_rows", None, "display.max_columns", None)
-
-#Alpha Vantage connection info
-ts = TimeSeries(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
-ti = TechIndicators(key='ALPHA_VANTAGE_API_KEY', output_format='pandas')
